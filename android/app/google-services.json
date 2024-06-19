@@ -59,20 +59,12 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:572359858499:android:69793fd940b3469b3577f6",
+        "mobilesdk_app_id": "1:572359858499:android:e858ffef872621a53577f6",
         "android_client_info": {
-          "package_name": "com.todoCli"
+          "package_name": "com.todocli"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "572359858499-cv9r5pnl4pvft6v5lhal3antqtgare2t.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.todoCli",
-            "certificate_hash": "af1cb75abb7c01e351f3ce985b945ab1f7054207"
-          }
-        },
         {
           "client_id": "572359858499-j9tjf1fp3up1fehaudqv469ncub8kkht.apps.googleusercontent.com",
           "client_type": 3
