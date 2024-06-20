@@ -1,6 +1,5 @@
 import {WEBCLIENTID} from '@env';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {useEffect} from 'react';
 import {Dimensions, Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {onGoogleButtonPress} from '../auth/google_sign_in';
 import { useNavigation } from '@react-navigation/native';
@@ -11,13 +10,16 @@ GoogleSignin.configure({
 const screenWidth = Dimensions.get('window').width;
 
 const GoogleButton = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
 
     const googleLogin = async () => {
         try {
           onGoogleButtonPress().then(() => {
             console.log('Google Login Success');
-            navigation.navigate('Todo');
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Todo' }],
+              });
           });
         } catch (error) {
           console.log(error);

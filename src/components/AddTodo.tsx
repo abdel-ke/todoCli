@@ -31,7 +31,6 @@ const AddTodo = ({ onPress }: props) => {
         placeholder="Add To-Do"
         value={onchangeText}
         onSubmitEditing={handleAddTodo}
-        // if click enter froom keyboard
       />
       <View style={styles.iconAdd}>
         <Icon name="add-circle" size={30} onPress={handleAddTodo} />
