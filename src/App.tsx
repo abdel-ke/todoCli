@@ -1,10 +1,13 @@
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import {useEffect, useState} from 'react';
 import {Button, Text, View} from 'react-native';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+
+import {WEBCLIENTID} from '@env';
+import {onGoogleButtonPress} from '../android/app/auth/google_sign_in';
 
 GoogleSignin.configure({
-  webClientId: '',
+  webClientId: WEBCLIENTID,
 });
 
 const App = () => {
@@ -44,18 +47,14 @@ const App = () => {
           }}
         />
         <Button
-          title="login with google"
-          onPress={() => {
-            console.log(process.env.CLIENTID);
-            // auth()
-            //   .signInWithPopup(provider)
-            //   .then((result) => {
-            //     console.log('User signed in');
-            //   })
-            //   .catch(error => {
-            //     console.error(error);
-            //   });
-          }}
+          title="Google Sign-In"
+          onPress={() =>
+            onGoogleButtonPress()
+              .then(() => console.log('Signed in with Google!'))
+              .catch(error => {
+                console.error(error);
+              })
+          }
         />
       </View>
     );
