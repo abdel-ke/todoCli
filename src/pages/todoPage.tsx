@@ -4,43 +4,44 @@ import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import TodoItem from '../components/TodoItem';
 import AddTodo from '../components/AddTodo';
-import { useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../App';
+import {useNavigation} from '@react-navigation/native';
+import EmptyState from '../components/EmptyState';
+import firestore from '@react-native-firebase/firestore';
+import {Icon} from '@rneui/base';
 
+const usersCollection = firestore()
+  .collection('todos')
+  .doc(auth().currentUser?.uid);
 
 type Todo = {
-  id: number;
-  title: string;
-  completed: number;
+  id: string;
+  title: any;
+  completed: any;
 };
-
-const EmptyState = () => (
-  <View
-    style={{
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}>
-    <Text
-      style={{
-        fontWeight: 'bold',
-        fontSize: 18,
-      }}>
-      No data!
-    </Text>
-  </View>
-);
-
 
 const TodoPage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   const handleTodoChange = async (
     index: number,
     action: 'update' | 'delete',
     val?: boolean,
   ) => {
+    const todo = todos[index];
+    if (action === 'update') {
+      await usersCollection
+        .collection('todos')
+        .doc(todo.id.toString())
+        .update({
+          completed: val ? 1 : 0,
+        });
+    } else if (action === 'delete') {
+      await usersCollection
+        .collection('todos')
+        .doc(todo.id.toString())
+        .delete();
+    }
     // const todo = todos[index];
     // if (action === "update") {
     //   await updateTodoAsync(todo.id, val!);
@@ -51,12 +52,21 @@ const TodoPage = () => {
   };
 
   const getTodos = async () => {
-    // try {
-    //   const todos = (await getTodosAsync()) as Todo[];
-    //   setTodos(todos);
-    // } catch (error) {
-    //   console.log(`error to get todos: ${error}`);
-    // }
+    try {
+      const snapshot = await usersCollection.collection('todos').get();
+      const data = snapshot.docs.map(doc => {
+        return {
+          id: doc.id,
+          title: doc.data().title,
+          completed: doc.data().completed,
+        };
+      });
+      setTodos(data);
+    } catch (error) {
+      console.log(`error to get todos: ${error}`);
+    }
+    // const data = await getTodosAsync();
+    // setTodos(data);
   };
 
   useEffect(() => {
@@ -68,12 +78,16 @@ const TodoPage = () => {
   }, []);
 
   const addTodo = async (todo: Todo) => {
-    // try {
-    //   await insertTodoAsync(todo.title);
-    //   getTodos();
-    // } catch (error) {
-    //   console.log(`error to add todo: ${error}`);
-    // }
+    try {
+      await usersCollection.collection('todos').add({
+        title: todo.title,
+        completed: 0,
+      });
+      // await addTodoAsync(todo);
+      getTodos();
+    } catch (error) {
+      console.log(`error to add todo: ${error}`);
+    }
   };
 
   useEffect(() => {
@@ -101,6 +115,7 @@ const TodoPage = () => {
         What are going to do?
       </Text>
       <AddTodo onPress={addTodo} />
+      <Icon name="add-circle" size={30} onPress={getTodos} />
       <Text>Your To-Do List:</Text>
       {todos.length ? (
         <FlatList data={todos} renderItem={renderItem} />
@@ -111,7 +126,11 @@ const TodoPage = () => {
         style={styles.signOut}
         onPress={async () => {
           await auth().signOut();
-          if (!auth().currentUser) navigation.navigate('SignIn');
+          if (!auth().currentUser)
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'SignIn'}],
+            });
         }}>
         <Text>Sign out</Text>
       </TouchableOpacity>
