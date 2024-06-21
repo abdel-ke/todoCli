@@ -6,16 +6,12 @@ import TodoItem from '../components/TodoItem';
 import AddTodo from '../components/AddTodo';
 import {useNavigation} from '@react-navigation/native';
 import EmptyState from '../components/EmptyState';
-import firestore from '@react-native-firebase/firestore';
 import {Icon} from '@rneui/base';
-
-const usersCollection = firestore()
-  .collection('todos')
-  .doc(auth().currentUser?.uid);
+import { addTodoFunc, deleteTodo, getAllTodos, updateTodo } from '../functions/fireStore';
 
 type Todo = {
   id: string;
-  title: any;
+  title: string;
   completed: any;
 };
 
@@ -23,80 +19,49 @@ const TodoPage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const navigation = useNavigation<any>();
 
-  const handleTodoChange = async (
-    index: number,
-    action: 'update' | 'delete',
-    val?: boolean,
-  ) => {
-    const todo = todos[index];
-    if (action === 'update') {
-      await usersCollection
-        .collection('todos')
-        .doc(todo.id.toString())
-        .update({
-          completed: val ? 1 : 0,
-        });
-    } else if (action === 'delete') {
-      await usersCollection
-        .collection('todos')
-        .doc(todo.id.toString())
-        .delete();
-    }
-    // const todo = todos[index];
-    // if (action === "update") {
-    //   await updateTodoAsync(todo.id, val!);
-    // } else if (action === "delete") {
-    //   await deleteTodoAsync(todo.id);
-    // }
-    // getTodos();
-  };
-
+  
   const getTodos = async () => {
+    console.log('called');
     try {
-      const snapshot = await usersCollection.collection('todos').get();
-      const data = snapshot.docs.map(doc => {
-        return {
-          id: doc.id,
-          title: doc.data().title,
-          completed: doc.data().completed,
-        };
-      });
+      const data = await getAllTodos();
       setTodos(data);
     } catch (error) {
       console.log(`error to get todos: ${error}`);
     }
-    // const data = await getTodosAsync();
-    // setTodos(data);
   };
-
-  useEffect(() => {
-    if (!auth().currentUser) {
-      //   router.replace("/signIn");
-      navigation.navigate('SignIn');
-    }
-    getTodos();
-  }, []);
 
   const addTodo = async (todo: Todo) => {
     try {
-      await usersCollection.collection('todos').add({
-        title: todo.title,
-        completed: 0,
-      });
-      // await addTodoAsync(todo);
+      await addTodoFunc(todo);
       getTodos();
     } catch (error) {
       console.log(`error to add todo: ${error}`);
     }
   };
 
+  const handleTodoChange = async (
+    index: number,
+    action: 'update' | 'delete',
+    val?: boolean,
+  ) => {
+    try {
+      if (action === 'update') {
+        await  updateTodo(todos[index].id.toString(), val || false);
+      } else if (action === 'delete') {
+        await deleteTodo(todos[index].id.toString());
+      }
+      getTodos();
+    } catch (error) {
+      console.log(`error to ${action} todo: ${error}`);
+    }
+  };
+
   useEffect(() => {
     if (!auth().currentUser) {
-      //   router.replace("/signIn");
       navigation.navigate('SignIn');
     }
     getTodos();
-  }, [todos]);
+  }, []);
 
   const renderItem = ({item, index}: {item: Todo; index: number}) => (
     <TodoItem
@@ -115,7 +80,6 @@ const TodoPage = () => {
         What are going to do?
       </Text>
       <AddTodo onPress={addTodo} />
-      <Icon name="add-circle" size={30} onPress={getTodos} />
       <Text>Your To-Do List:</Text>
       {todos.length ? (
         <FlatList data={todos} renderItem={renderItem} />
