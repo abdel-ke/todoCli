@@ -1,15 +1,16 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
-const usersCollection = firestore()
-  .collection('todos')
-  .doc(auth().currentUser?.uid);
-
 type Todo = {
   id: string;
   title: string;
   completed: any;
 };
+
+const usersCollection = firestore()
+  .collection('todos')
+  .doc(auth().currentUser?.uid);
+
 
 const addTodoFunc = async (todo: Todo) => {
   await usersCollection.collection('todos').add({
@@ -20,7 +21,6 @@ const addTodoFunc = async (todo: Todo) => {
 };
 
 const getAllTodos = async () => {
-    // Get all todos from the user sorted by title in ascending order
     const snapshot = await usersCollection.collection('todos').orderBy('createdAt').get();
   const data = snapshot.docs.map(doc => {
     return {

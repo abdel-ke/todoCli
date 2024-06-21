@@ -1,5 +1,3 @@
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {WEBCLIENTID} from '@env';
 import TodoPage from './pages/todoPage';
 import SignIn from './pages/signIn';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -7,10 +5,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomePage from './homePage';
 import SignUp from './pages/signUp';
-
-GoogleSignin.configure({
-  webClientId: WEBCLIENTID,
-});
 
 export type RootStackParamList = {
   Home: undefined;
