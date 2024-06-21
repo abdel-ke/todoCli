@@ -23,7 +23,6 @@ const SignIn = () => {
     else
       try {
         await auth().signInWithEmailAndPassword(email, pass);
-        // navigation.navigate('Todo');
         navigation.reset({
           index: 0,
           routes: [{name: 'Todo'}],

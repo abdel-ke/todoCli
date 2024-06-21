@@ -77,7 +77,6 @@ const SignUp = () => {
         placeholder="Confirm password"
         secureTextEntry={true}
       />
-      {/* <Button title="Sign up" onPress={signUp} /> */}
       <TouchableOpacity style={styles.button} onPress={signUp}>
         <Text>Sign Up</Text>
       </TouchableOpacity>

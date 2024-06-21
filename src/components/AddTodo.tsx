@@ -1,21 +1,21 @@
-import { Icon } from "@rneui/base";
-import React from "react";
-import { useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import {Icon} from '@rneui/base';
+import React from 'react';
+import {useState} from 'react';
+import {StyleSheet, TextInput, View} from 'react-native';
 
 type props = {
   onPress: Function;
 };
 
-const AddTodo = ({ onPress }: props) => {
-  const [onchangeText, setOnchangeText] = useState("");
+const AddTodo = ({onPress}: props) => {
+  const [onchangeText, setOnchangeText] = useState('');
 
   const handleAddTodo = () => {
     if (onchangeText) {
-      onPress({ title: onchangeText, checked: false });
-      setOnchangeText("");
+      onPress({title: onchangeText, checked: false});
+      setOnchangeText('');
     } else {
-      console.log("Please enter a todo");
+      console.log('Please enter a todo');
     }
   };
 
@@ -32,34 +32,34 @@ const AddTodo = ({ onPress }: props) => {
         value={onchangeText}
         onSubmitEditing={handleAddTodo}
       />
-      <View style={styles.iconAdd}>
-        <Icon name="add-circle" size={30} onPress={handleAddTodo} />
-      </View>
+      <Icon
+        style={{
+          paddingRight: 3,
+        }}
+        name="add-circle"
+        size={30}
+        onPress={handleAddTodo}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
+    flexDirection: 'row',
     borderWidth: 1,
     borderRadius: 10,
-    alignItems: "center",
+    alignItems: 'center',
     marginVertical: 10,
-    shadowColor: "black",
+    shadowColor: 'black',
+    backgroundColor: 'white',
   },
   input: {
     flex: 1,
     paddingHorizontal: 10,
     paddingVertical: 8,
     borderRadius: 10,
-  },
-  iconAdd: {
-    padding: 2,
-    margin: 5,
-    backgroundColor: "lightblue",
-    borderRadius: 10,
-  },
+  }
 });
 
 export default AddTodo;
