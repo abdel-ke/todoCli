@@ -2,6 +2,7 @@ import { CheckBox, Icon } from "@rneui/base";
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
+
 type Props = {
   item: {
     title: string;
@@ -27,7 +28,7 @@ const TodoItem = ({ item, onCheckedChange, onDelete }: Props) => {
       >
         {item.title}
       </Text>
-        <Icon name="trash" size={26} color={"crimson"} onPress={onDelete} />
+        <Icon name="delete" size={26} color={"crimson"} onPress={onDelete} />
     </View>
   );
 };
