@@ -3,6 +3,7 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const onGoogleButtonPress = async () => {
   // Check if your device supports Google Play
+  await GoogleSignin.signOut();
   await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
   // Get the users ID token
   const {idToken} = await GoogleSignin.signIn();
