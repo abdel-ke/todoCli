@@ -32,10 +32,18 @@ const TodoPage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const navigation = useNavigation<any>();
 
+  useEffect(() => {
+    if (!auth().currentUser) {
+      navigation.navigate('SignIn');
+    } else {
+      getAllTodos(setTodos);
+    }
+  }, []);
+
   const getTodos = async () => {
     try {
-      const data = await getAllTodos();
-      setTodos(data);
+      getAllTodos(setTodos);
+      // setTodos(data);
     } catch (error) {
       console.log(`error to get todos: ${error}`);
     }
@@ -74,6 +82,7 @@ const TodoPage = () => {
     getTodos();
   }, []);
 
+
   const renderItem = ({item, index}: {item: Todo; index: number}) => (
     <TodoItem
       item={item}
@@ -96,14 +105,15 @@ const TodoPage = () => {
           }}>
           Hello {auth().currentUser?.email}
         </Text>
-        <Text style={styles.text}>
-          What are you going to do?
-        </Text>
+        <Text style={styles.text}>What are you going to do?</Text>
         <AddTodo onPress={addTodo} />
         <Text
-          style={[styles.text , {
-            marginTop: 15,
-          }]}>
+          style={[
+            styles.text,
+            {
+              marginTop: 15,
+            },
+          ]}>
           Your To-Do List :
         </Text>
         {todos.length ? (
