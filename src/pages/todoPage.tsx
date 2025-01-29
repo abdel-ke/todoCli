@@ -1,3 +1,4 @@
+import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import React, {useEffect, useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import {
@@ -21,7 +22,7 @@ import {
 } from '../functions/fireStore';
 
 type Todo = {
-  id: string;
+  id?: string;
   title: string;
   completed: any;
 };
@@ -29,7 +30,7 @@ type Todo = {
 const heightScreen = Dimensions.get('window').height;
 
 const TodoPage = () => {
-  console.log('rendered');
+  const [onchangeText, setOnchangeText] = useState('');
   const [todos, setTodos] = useState<Todo[]>([]);
   const navigation = useNavigation<any>();
 
@@ -66,8 +67,10 @@ const TodoPage = () => {
   ) => {
     try {
       if (action === 'update') {
+        if (!todos[index].id) return;
         await updateTodo(todos[index].id.toString(), val || false);
       } else if (action === 'delete') {
+        if (!todos[index].id) return;
         await deleteTodo(todos[index].id.toString());
       }
       getTodos();
@@ -98,26 +101,37 @@ const TodoPage = () => {
       <View style={[styles.container, {marginTop: heightScreen / 20}]}>
         <Text style={styles.title}>Hello {auth().currentUser?.email}</Text>
         <Text style={styles.text}>What are you going to do?</Text>
-        <AddTodo onPress={addTodo} />
+        <AddTodo
+          onPress={addTodo}
+          onchangeText={onchangeText}
+          setOnchangeText={setOnchangeText}
+        />
         <Text style={[styles.text, {marginTop: 15}]}>Your To-Do List :</Text>
         {todos.length ? (
           <FlatList data={todos} renderItem={renderItem} />
         ) : (
           <EmptyState />
         )}
-        <TouchableOpacity
-          style={styles.signOut}
-          onPress={async () => {
-            await auth().signOut();
-            if (!auth().currentUser) {
-              navigation.reset({
-                index: 0,
-                routes: [{name: 'SignIn'}],
-              });
-            }
-          }}>
-          <Text>Sign out</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.logOut}
+            onPress={async () => {
+              await auth().signOut();
+              if (!auth().currentUser) {
+                navigation.reset({
+                  index: 0,
+                  routes: [{name: 'SignIn'}],
+                });
+              }
+            }}>
+            <Icon name="logout" size={25} color="red" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.Add}
+            onPress={() => addTodo({title: onchangeText, completed: false})}>
+            <Text style={{color: 'black'}}>Add</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ImageBackground>
   );
@@ -138,18 +152,44 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 20,
   },
-  signOut: {
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#DDDDDD',
-    borderRadius: 5,
-    marginTop: 10,
-    borderWidth: 1,
-  },
   text: {
     color: 'white',
     fontWeight: '500',
     fontSize: 18,
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    gap: 10,
+  },
+  signOut: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#DDDDDD',
+    borderRadius: 5,
+    borderWidth: 1,
+  },
+  Add: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    borderWidth: 1,
+  },
+  logOut: {
+    borderWidth: 1,
+    borderColor: 'red',
+    borderRadius: 5,
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
+
 export default TodoPage;

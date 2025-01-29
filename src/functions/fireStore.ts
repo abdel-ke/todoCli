@@ -2,7 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
 type Todo = {
-  id: string;
+  id?: string;
   title: string;
   completed: any;
 };

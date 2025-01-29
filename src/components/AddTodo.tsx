@@ -1,15 +1,14 @@
 import {Icon} from '@rneui/base';
 import React from 'react';
-import {useState} from 'react';
 import {StyleSheet, TextInput, View} from 'react-native';
 
 type props = {
   onPress: Function;
+  onchangeText: string;
+  setOnchangeText: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const AddTodo = ({onPress}: props) => {
-  const [onchangeText, setOnchangeText] = useState('');
-
+const AddTodo = ({onPress, onchangeText, setOnchangeText}: props) => {
   const handleAddTodo = () => {
     if (onchangeText) {
       onPress({title: onchangeText, checked: false});
@@ -59,7 +58,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
     borderRadius: 10,
-  }
+    color: 'black',
+  },
 });
 
 export default AddTodo;
