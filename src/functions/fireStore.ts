@@ -33,25 +33,6 @@ const getAllTodos = async (setTodos: any) => {
   return data;
 };
 
-// const getAllTodos = async (setTodos: any) => {
-//   const unsubscribe = usersCollection
-//     .collection('todos')
-//     .orderBy('createdAt')
-//     .onSnapshot(snapshot => {
-//       // console.log('doc: ', snapshot.docs);
-//       const todos = snapshot.docs.map(doc => ({
-//         id: doc.id,
-//         title: doc.data().title,
-//         completed: doc.data().completed,
-//       }));
-//       setTodos(todos);
-//     }, error => {
-//       console.error(`Failed to fetch todos: ${error}`);
-//     });
-
-//   return unsubscribe; // Return the unsubscribe function
-// };
-
 const updateTodo = async (id: string, completed: boolean) => {
   await usersCollection
     .collection('todos')

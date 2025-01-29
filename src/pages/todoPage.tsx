@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import {
   Dimensions,
@@ -29,6 +29,7 @@ type Todo = {
 const heightScreen = Dimensions.get('window').height;
 
 const TodoPage = () => {
+  console.log('rendered');
   const [todos, setTodos] = useState<Todo[]>([]);
   const navigation = useNavigation<any>();
 
@@ -38,7 +39,7 @@ const TodoPage = () => {
     } else {
       getAllTodos(setTodos);
     }
-  }, []);
+  }, [navigation]);
 
   const getTodos = async () => {
     try {
@@ -80,8 +81,7 @@ const TodoPage = () => {
       navigation.navigate('SignIn');
     }
     getTodos();
-  }, []);
-
+  }, [navigation]);
 
   const renderItem = ({item, index}: {item: Todo; index: number}) => (
     <TodoItem
@@ -96,26 +96,10 @@ const TodoPage = () => {
       style={[styles.backgroungImage, {height: heightScreen / 1.8}]}
       source={require('../assets/images/bgImage.png')}>
       <View style={[styles.container, {marginTop: heightScreen / 20}]}>
-        <Text
-          style={{
-            fontWeight: 'bold',
-            fontSize: 22,
-            marginVertical: 10,
-            color: 'white',
-          }}>
-          Hello {auth().currentUser?.email}
-        </Text>
+        <Text style={styles.title}>Hello {auth().currentUser?.email}</Text>
         <Text style={styles.text}>What are you going to do?</Text>
         <AddTodo onPress={addTodo} />
-        <Text
-          style={[
-            styles.text,
-            {
-              marginTop: 15,
-            },
-          ]}>
-          Your To-Do List :
-        </Text>
+        <Text style={[styles.text, {marginTop: 15}]}>Your To-Do List :</Text>
         {todos.length ? (
           <FlatList data={todos} renderItem={renderItem} />
         ) : (
@@ -125,11 +109,12 @@ const TodoPage = () => {
           style={styles.signOut}
           onPress={async () => {
             await auth().signOut();
-            if (!auth().currentUser)
+            if (!auth().currentUser) {
               navigation.reset({
                 index: 0,
                 routes: [{name: 'SignIn'}],
               });
+            }
           }}>
           <Text>Sign out</Text>
         </TouchableOpacity>
@@ -139,6 +124,12 @@ const TodoPage = () => {
 };
 
 const styles = StyleSheet.create({
+  title: {
+    fontWeight: 'bold',
+    fontSize: 22,
+    marginVertical: 10,
+    color: 'white',
+  },
   backgroungImage: {
     flex: 1,
     paddingHorizontal: 16,

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import auth from '@react-native-firebase/auth';
 
 import {
@@ -19,8 +19,9 @@ const SignIn = () => {
 
   const signIn = async () => {
     console.log('start signIn');
-    if (!email || !pass) Alert.alert('please fill your information');
-    else
+    if (!email || !pass) {
+      Alert.alert('please fill your information');
+    } else {
       try {
         await auth().signInWithEmailAndPassword(email, pass);
         navigation.reset({
@@ -31,6 +32,7 @@ const SignIn = () => {
         console.log('error', error);
         Alert.alert('Wrong inputs', 'email or password is incorrect');
       }
+    }
   };
 
   return (

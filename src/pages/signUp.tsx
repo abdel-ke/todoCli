@@ -16,10 +16,10 @@ const SignUp = () => {
   const [pass, onChangePass] = useState('');
   const [confPass, onChangeConfPass] = useState('');
 
-  const creatNewUser = async (email: string, password: string) => {
+  const creatNewUser = async (userEmail: string, password: string) => {
     try {
       const userCredential = await auth().createUserWithEmailAndPassword(
-        email,
+        userEmail,
         password,
       );
       const user = userCredential.user;
@@ -33,11 +33,12 @@ const SignUp = () => {
   };
 
   const signUp = async () => {
-    if (!email || !pass || !confPass)
+    if (!email || !pass || !confPass) {
       return Alert.alert('Empty inputs', 'please fill your information');
-    if (pass != confPass) {
-        console.log(`pass: ${pass}, confPass: ${confPass}`);
-        return Alert.alert('Incorrect Password', 'Please check your password');
+    }
+    if (pass !== confPass) {
+      console.log(`pass: ${pass}, confPass: ${confPass}`);
+      return Alert.alert('Incorrect Password', 'Please check your password');
     }
     try {
       await creatNewUser(email, pass);
@@ -49,7 +50,10 @@ const SignUp = () => {
       if (error.errorCode === 'auth/email-already-in-use') {
         Alert.alert('Already exist', 'Email already in use');
       } else if (error.errorCode === 'auth/weak-password') {
-        Alert.alert('Weak password','Password should be at least 6 characters');
+        Alert.alert(
+          'Weak password',
+          'Password should be at least 6 characters',
+        );
       } else if (error.errorCode === 'auth/invalid-email') {
         Alert.alert('Invalid email', 'The email address is badly formatted.');
       } else {
